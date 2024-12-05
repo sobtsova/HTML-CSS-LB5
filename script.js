@@ -35,7 +35,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("divisorForm");
     const numberInput = document.getElementById("numberInput");
 
-    // Перевірка наявності cookies
     const cookies = document.cookie.split("; ").find(row => row.startsWith("divisors="));
 
     if (cookies) {
@@ -43,14 +42,12 @@ document.addEventListener("DOMContentLoaded", () => {
         if (confirm(`Збережені дані з cookies: ${divisorsData}. Бажаєте залишити ці дані?`)) {
             alert("Cookies залишені. Перезавантажте сторінку для збереження стану.");
         } else {
-            // Видалення cookies і оновлення сторінки
             document.cookie = "divisors=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
             location.reload();
         }
         return;
     }
 
-    // Обробка форми
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const number = parseInt(numberInput.value);
@@ -60,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Обчислення дільників
         const divisors = [];
         for (let i = 1; i <= number; i++) {
             if (number % i === 0) {
@@ -68,13 +64,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        // Виведення результату
         alert(`Дільники числа ${number}: ${divisors.join(", ")}`);
-
-        // Збереження в cookies
         document.cookie = `divisors=${encodeURIComponent(divisors.join(", "))}; path=/;`;
-
-        // Повідомлення про успішне збереження
         alert("Результат збережено в cookies.");
     });
 });
