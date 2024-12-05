@@ -2,12 +2,15 @@
 document.addEventListener("DOMContentLoaded", () => {
     const block3 = document.querySelector(".block3");
     const block6 = document.querySelector(".block6");
-    
-    if (block3 && block6) {
-        const parent = block3.parentNode;
-        parent.insertBefore(block6, block3);
-    }
+
+    const block3Content = block3.innerHTML;
+    const block6Content = block6.innerHTML;
+
+    block3.innerHTML = block6Content;
+    block6.innerHTML = block3Content;
 });
+
+
 
 // 2 Функція для обчислення площі трапеції
 document.addEventListener("DOMContentLoaded", () => {
@@ -29,55 +32,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // 3 Визначення дільників числа та робота з cookies
 document.addEventListener("DOMContentLoaded", () => {
-    const block5 = document.querySelector(".block5");
+    const form = document.getElementById("divisorForm");
+    const numberInput = document.getElementById("numberInput");
 
+    // Перевірка наявності cookies
     const cookies = document.cookie.split("; ").find(row => row.startsWith("divisors="));
-    
+
     if (cookies) {
-        const divisors = cookies.split("=")[1];
-        if (confirm(`Дані з cookies знайдені: ${divisors}. Зберегти їх?`)) {
-            alert("Дані збережені. Оновіть сторінку.");
-            location.reload(); 
+        const divisorsData = decodeURIComponent(cookies.split("=")[1]);
+        if (confirm(`Збережені дані з cookies: ${divisorsData}. Бажаєте залишити ці дані?`)) {
+            alert("Cookies залишені. Перезавантажте сторінку для збереження стану.");
         } else {
+            // Видалення cookies і оновлення сторінки
             document.cookie = "divisors=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-            location.reload(); 
+            location.reload();
         }
-    } else {
-        const form = document.createElement("form");
-        form.innerHTML = `
-            <input 
-                type="number" 
-                id="numberInput" 
-                placeholder="Введіть натуральне число" 
-                min="1" 
-                required 
-                style="width: 220px; padding: 5px; font-size: 16px;" 
-            />
-            <button type="submit">Знайти дільники</button>
-        `;
-        block5.appendChild(form);
-
-        form.addEventListener("submit", (e) => {
-            e.preventDefault();
-            const number = document.getElementById("numberInput").value;
-            
-            if (number && Number.isInteger(+number) && +number > 0) {
-                const divisors = findDivisors(Number(number));
-                alert(`Дільники числа ${number}: ${divisors.join(", ")}`);
-                document.cookie = `divisors=${divisors.join(", ")}; path=/;`;
-            } else {
-                alert("Будь ласка, введіть натуральне число.");
-            }
-        });
+        return;
     }
 
-    function findDivisors(num) {
+    // Обробка форми
+    form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const number = parseInt(numberInput.value);
+
+        if (isNaN(number) || number < 1) {
+            alert("Введіть коректне натуральне число.");
+            return;
+        }
+
+        // Обчислення дільників
         const divisors = [];
-        for (let i = 1; i <= num; i++) {
-            if (num % i === 0) divisors.push(i);
+        for (let i = 1; i <= number; i++) {
+            if (number % i === 0) {
+                divisors.push(i);
+            }
         }
-        return divisors;
-    }
+
+        // Виведення результату
+        alert(`Дільники числа ${number}: ${divisors.join(", ")}`);
+
+        // Збереження в cookies
+        document.cookie = `divisors=${encodeURIComponent(divisors.join(", "))}; path=/;`;
+
+        // Повідомлення про успішне збереження
+        alert("Результат збережено в cookies.");
+    });
 });
 
 // 4 Подія change для встановлення верхнього регістру
